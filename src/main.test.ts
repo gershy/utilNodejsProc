@@ -21,7 +21,7 @@ import './main.ts';
       name: 'todo',
       fn: async () => {
         
-        throw Error('not implemented');
+        // throw Error('not implemented');
         
       }
     }
