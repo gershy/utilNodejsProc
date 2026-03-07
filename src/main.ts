@@ -9,10 +9,12 @@ const stripAnsi = (str: string) => str.replace(/\u001B\[[0-9]+m/g, ''); // Remov
 type RunInShellResultStrs = { stdout: string, stderr: string, output: string, overview: string };
 type RunInShellReturnValue = Promise<RunInShellResultStrs> & { proc: ChildProcessWithoutNullStreams, rawShellStr: string };
 
+process.env;
+
 export type ProcOpts = {
   timeoutMs?: number,
   bufferOutput?: boolean,
-  env?: Obj<string>,
+  env?: Obj<string> | NodeJS.ProcessEnv,
   cwd?: DiskFact,
   onInput?: (type: 'init' | 'out' | 'err', data: string) => void
 };
