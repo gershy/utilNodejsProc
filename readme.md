@@ -7,3 +7,8 @@ const repoHasChanges = await proc('git status', { cwd: '/path/to/my/repo' }).the
   return output[has]('working tree clean');
 });
 ```
+
+By default no environment vars are passed to `proc`. To pass environment vars, use:
+```ts
+await proc('my command', { env: process.env });
+```
