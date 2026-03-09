@@ -17,6 +17,7 @@ export type ProcOpts = {
   args?: Obj<string>,
   onInput?: (type: 'init' | 'out' | 'err', data: string) => void
 };
+
 export default (cmd: string, opts: ProcOpts): RunInShellReturnValue => {
 
   // Note that `timeoutMs` counts since the most recent chunk
@@ -25,12 +26,6 @@ export default (cmd: string, opts: ProcOpts): RunInShellReturnValue => {
   
   const reg = /[^'"\s]+|"[^"]*"|'[^']*'/g;
   const [ shellName, ...shellArgs ] = cmd.match(reg)![map](v => v.trim() || skip).map(v => {
-    
-    // Unquote double-quoted content
-    if (v[hasHead](`"`) && v[hasHead](`"`)) return v.slice(`"`.length, -`"`.length);
-    
-    // Unquote single-quoted content
-    if (v[hasHead](`'`) && v[hasHead](`'`)) return v.slice(`'`.length, -`'`.length);
     
     // Resolve referenced content (uses "{{" and "}}")
     if (v[hasHead]('{{') && !v[hasTail]('}}')) {
@@ -41,6 +36,7 @@ export default (cmd: string, opts: ProcOpts): RunInShellReturnValue => {
       
     }
     
+    // Note that quoted args should *include* their quotes when passed to `spawn`!!!
     return v;
     
   });
