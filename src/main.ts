@@ -23,12 +23,26 @@ export default (cmd: string, opts: ProcOpts): RunInShellReturnValue => {
   const { cwd, timeoutMs=30 * 1000, bufferOutput=true, env={}, args={}, onInput=null } = opts ?? {};
   const err = Error('');
   
-  const [ shellName, ...shellArgs ] = cmd.split(/\s+/)[map](v => v.trim() || skip).map(v => {
-    if (!v[hasHead]('{{') || !v[hasTail]('}}')) return v;
+  const reg = /[^'"\s]+|"[^"]*"|'[^']*'/g;
+  const [ shellName, ...shellArgs ] = cmd.match(reg)![map](v => v.trim() || skip).map(v => {
     
-    const key = v.slice('{{'.length, -'}}'.length);
-    if (!args[has](key)) throw Error('Arg missing')[mod]({ key });
-    return args[key];
+    // Unquote double-quoted content
+    if (v[hasHead](`"`) && v[hasHead](`"`)) return v.slice(`"`.length, -`"`.length);
+    
+    // Unquote single-quoted content
+    if (v[hasHead](`'`) && v[hasHead](`'`)) return v.slice(`'`.length, -`'`.length);
+    
+    // Resolve referenced content (uses "{{" and "}}")
+    if (v[hasHead]('{{') && !v[hasTail]('}}')) {
+      
+      const key = v.slice('{{'.length, -'}}'.length);
+      if (!args[has](key)) throw Error('Arg missing')[mod]({ key });
+      return args[key];
+      
+    }
+    
+    return v;
+    
   });
   
   const state = {
