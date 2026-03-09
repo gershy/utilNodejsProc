@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { spawn, ChildProcessWithoutNullStreams } from 'node:child_process';
-import { then } from '@gershy/clearing';
+import { skip, then } from '@gershy/clearing';
 import type { rootFact } from '@gershy/disk';
 type DiskFact = typeof rootFact;
 
@@ -9,22 +9,27 @@ const stripAnsi = (str: string) => str.replace(/\u001B\[[0-9]+m/g, ''); // Remov
 type RunInShellResultStrs = { stdout: string, stderr: string, output: string, overview: string };
 type RunInShellReturnValue = Promise<RunInShellResultStrs> & { proc: ChildProcessWithoutNullStreams, rawShellStr: string };
 
-process.env;
-
 export type ProcOpts = {
   cwd: DiskFact,
   timeoutMs?: number,
   bufferOutput?: boolean,
   env?: Obj<string> | NodeJS.ProcessEnv,
+  args?: Obj<string>,
   onInput?: (type: 'init' | 'out' | 'err', data: string) => void
 };
 export default (cmd: string, opts: ProcOpts): RunInShellReturnValue => {
 
   // Note that `timeoutMs` counts since the most recent chunk
-  const { cwd, timeoutMs=30 * 1000, bufferOutput=true, env={}, onInput=null } = opts ?? {};
+  const { cwd, timeoutMs=30 * 1000, bufferOutput=true, env={}, args={}, onInput=null } = opts ?? {};
   const err = Error('');
   
-  const [ shellName, ...shellArgs ] = cmd.split(/\s+/).filter(v => !!v);
+  const [ shellName, ...shellArgs ] = cmd.split(/\s+/)[map](v => v.trim() || skip).map(v => {
+    if (!v[hasHead]('{{') || !v[hasTail]('}}')) return v;
+    
+    const key = v.slice('{{'.length, -'}}'.length);
+    if (!args[has](key)) throw Error('Arg missing')[mod]({ key });
+    return args[key];
+  });
   
   const state = {
     onInput,
