@@ -12,3 +12,7 @@ By default no environment vars are passed to `proc`. To pass environment vars, u
 ```ts
 await proc('my command', { env: process.env });
 ```
+
+## Tech debt
+
+- This isn't written as a util currently! It depends on nodejs stuff!

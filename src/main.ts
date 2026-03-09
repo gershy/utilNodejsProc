@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { spawn, ChildProcessWithoutNullStreams } from 'node:child_process';
 import { then } from '@gershy/clearing';
-import { rootFact } from '@gershy/disk';
+import type { rootFact } from '@gershy/disk';
 type DiskFact = typeof rootFact;
 
 const stripAnsi = (str: string) => str.replace(/\u001B\[[0-9]+m/g, ''); // Removes ansi
@@ -12,16 +12,16 @@ type RunInShellReturnValue = Promise<RunInShellResultStrs> & { proc: ChildProces
 process.env;
 
 export type ProcOpts = {
+  cwd: DiskFact,
   timeoutMs?: number,
   bufferOutput?: boolean,
   env?: Obj<string> | NodeJS.ProcessEnv,
-  cwd?: DiskFact,
   onInput?: (type: 'init' | 'out' | 'err', data: string) => void
 };
-export default (cmd: string, opts?: ProcOpts): RunInShellReturnValue => {
+export default (cmd: string, opts: ProcOpts): RunInShellReturnValue => {
 
   // Note that `timeoutMs` counts since the most recent chunk
-  const { timeoutMs=30 * 1000, bufferOutput=true, env={}, cwd=rootFact.kid([ '.proc' ]), onInput=null } = opts ?? {};
+  const { cwd, timeoutMs=30 * 1000, bufferOutput=true, env={}, onInput=null } = opts ?? {};
   const err = Error('');
   
   const [ shellName, ...shellArgs ] = cmd.split(/\s+/).filter(v => !!v);

@@ -1,6 +1,6 @@
 {
   "name": "@gershy/util-nodejs-proc",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "TODO",
   "keywords": [
     "TODO"
@@ -16,16 +16,15 @@
   "homepage": "https://github.com/gershy/utilNodejsProc#readme",
   "license": "ISC",
   "peerDependencies": {
-    "@gershy/clearing": "^0.0.24"
+    "@gershy/clearing": "^0.0.29"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "@gershy/disk": "^0.0.10"
   },
-  "dependencies": {
-    "@gershy/disk": "^0.0.9"
-  },
+  "dependencies": {},
   "type": "module",
   "files": [
     "cmp"

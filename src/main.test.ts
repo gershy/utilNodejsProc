@@ -1,4 +1,4 @@
-import { assertEqual } from '../build/utils.test.ts';
+import { assertEqual, testRunner } from '../build/utils.test.ts';
 import './main.ts';
 
 // Type testing
@@ -12,36 +12,12 @@ import './main.ts';
   
 })();
 
-// Test cases
-(async () => {
+testRunner([
   
-  const cases = [
+  { name: 'not implemented', fn: async () => {
     
-    {
-      name: 'not implemented',
-      fn: async () => {
-        
-        // TODO: Implement!
-        
-      }
-    }
+    // TODO: Implement!
     
-  ];
-  for (const { name, fn } of cases) {
-    
-    try {
-      
-      await fn();
-      
-    } catch (err: any) {
-      
-      console.log(`FAILED: "${name}"`, err[limn]());
-      process.exit(1);
-      
-    }
-    
-  }
+  }}
   
-  console.log(`Passed ${cases.length} test${cases.length === 1 ? '' : 's'}`);
-  
-})();
+]);
